@@ -1,6 +1,7 @@
 name: "Build and commit osu-native binaries"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
