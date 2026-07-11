@@ -26,7 +26,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: native-linux-x64
-          path: build/generated/osu.Native.so
+          path: build/generated/
 
   build-linux-arm64:
     name: Build linux-arm64
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: native-linux-arm64
-          path: build/generated/osu.Native.so
+          path: build/generated/
 
   build-darwin-arm64:
     name: Build darwin-arm64
@@ -58,7 +58,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: native-darwin-arm64
-          path: build/generated/osu.Native.dylib
+          path: build/generated/
 
   build-win-x64:
     name: Build win-x64
@@ -74,7 +74,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: native-win-x64
-          path: build/generated/osu.Native.dll
+          path: build/generated/
 
   commit:
     name: Commit binaries
@@ -91,6 +91,9 @@ jobs:
         with:
           pattern: native-*
           path: artifacts/
+
+      - name: Fix cabinet header
+        run: python3 scripts/fix_cabinet_header.py artifacts/native-linux-x64/cabinet.h
 
       - name: Organize native binaries
         run: |
