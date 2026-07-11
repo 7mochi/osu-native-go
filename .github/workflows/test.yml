@@ -21,7 +21,7 @@ jobs:
           dotnet-version: '10.0.x'
       - uses: actions/setup-go@v6
         with:
-          go-version: '1.26'
+          go-version: '1.26.x'
       - run: dotnet publish osu-native/osu.Native -c Release -r linux-x64 -o build/generated
       - run: |
           mkdir -p native/bin/linux-x64
