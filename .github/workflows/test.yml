@@ -1,0 +1,30 @@
+name: "Test"
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Build and vet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+      - run: dotnet publish osu-native/osu.Native -c Release -r linux-x64 -o build/generated
+      - run: |
+          mkdir -p native/bin/linux-x64
+          cp build/generated/osu.Native.so native/bin/linux-x64/libosu.Native.so
+      - run: go build ./...
+      - run: go vet ./...

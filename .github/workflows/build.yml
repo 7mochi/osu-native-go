@@ -1,0 +1,108 @@
+name: "Build and commit osu-native binaries"
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'osu-native/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux-x64:
+    name: Build linux-x64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet publish osu-native/osu.Native -c Release -r linux-x64 -o build/generated
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-linux-x64
+          path: build/generated/osu.Native.so
+
+  build-linux-arm64:
+    name: Build linux-arm64
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet publish osu-native/osu.Native -c Release -r linux-arm64 -o build/generated
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-linux-arm64
+          path: build/generated/osu.Native.so
+
+  build-darwin-arm64:
+    name: Build darwin-arm64
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet publish osu-native/osu.Native -c Release -r osx-arm64 -o build/generated
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-darwin-arm64
+          path: build/generated/osu.Native.dylib
+
+  build-win-x64:
+    name: Build win-x64
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet publish osu-native/osu.Native -c Release -r win-x64 -o build/generated
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-win-x64
+          path: build/generated/osu.Native.dll
+
+  commit:
+    name: Commit binaries
+    runs-on: ubuntu-latest
+    needs: [build-linux-x64, build-linux-arm64, build-darwin-arm64, build-win-x64]
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download all native artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: native-*
+          path: artifacts/
+
+      - name: Organize native binaries
+        run: |
+          mkdir -p native/bin/linux-x64 native/bin/linux-arm64 native/bin/darwin-arm64 native/bin/win-x64
+          cp artifacts/native-linux-x64/osu.Native.so native/bin/linux-x64/libosu.Native.so
+          cp artifacts/native-linux-arm64/osu.Native.so native/bin/linux-arm64/libosu.Native.so
+          cp artifacts/native-darwin-arm64/osu.Native.dylib native/bin/darwin-arm64/libosu.Native.dylib
+          cp artifacts/native-win-x64/osu.Native.dll native/bin/win-x64/osu.Native.dll
+
+      - name: Commit binaries
+        run: |
+          git config user.name "osu-native-go-bot"
+          git config user.email "bot@osupe.ru"
+          git add --force native/bin/
+          git diff --staged --quiet || git commit -m "chore: upload osu-native binaries"
+          git push
