@@ -1,7 +1,7 @@
 package osunative
 
 /*
-#include "build/generated/cabinet.h"
+#include "native/bin/cabinet.h"
 */
 import "C"
 import (

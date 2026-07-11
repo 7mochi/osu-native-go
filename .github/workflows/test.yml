@@ -24,6 +24,7 @@ jobs:
           go-version: '1.26.x'
       - run: dotnet publish osu-native/osu.Native -c Release -r linux-x64 -o build/generated
       - run: python3 scripts/fix_cabinet_header.py build/generated/cabinet.h
+      - run: cp build/generated/cabinet.h native/bin/
       - run: |
           mkdir -p native/bin/linux-x64
           cp build/generated/osu.Native.so native/bin/linux-x64/libosu.Native.so

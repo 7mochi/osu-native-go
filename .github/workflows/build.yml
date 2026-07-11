@@ -95,10 +95,13 @@ jobs:
       - name: Organize native binaries
         run: |
           mkdir -p native/bin/linux-x64 native/bin/linux-arm64 native/bin/darwin-arm64 native/bin/win-x64
+
           cp artifacts/native-linux-x64/osu.Native.so native/bin/linux-x64/libosu.Native.so
           cp artifacts/native-linux-arm64/osu.Native.so native/bin/linux-arm64/libosu.Native.so
           cp artifacts/native-darwin-arm64/osu.Native.dylib native/bin/darwin-arm64/libosu.Native.dylib
           cp artifacts/native-win-x64/osu.Native.dll native/bin/win-x64/osu.Native.dll
+
+          cp artifacts/native-linux-x64/cabinet.h native/bin/
 
       - name: Commit binaries
         run: |

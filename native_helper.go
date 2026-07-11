@@ -1,7 +1,7 @@
 package osunative
 
 /*
-#include "build/generated/cabinet.h"
+#include "native/bin/cabinet.h"
 
 static inline int nullable_double_hasValue(void* p) {
     return ((Cabinet__Nullable_double*)p)->hasValue ? 1 : 0;
