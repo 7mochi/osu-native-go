@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'osu-native/**'
+      - 'osu-native'
 
 permissions:
   contents: write
