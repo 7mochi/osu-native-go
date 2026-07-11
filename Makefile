@@ -29,6 +29,7 @@ all: build-osu-native copy-native
 
 build-osu-native:
 	dotnet publish osu-native/osu.Native -c Release -r $(PLATFORM) -o $(BUILD_DIR)/generated
+	python3 scripts/fix_cabinet_header.py $(BUILD_DIR)/generated/cabinet.h
 
 copy-native:
 	mkdir -p $(NATIVE_DIR)/$(PLATFORM)
