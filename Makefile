@@ -8,6 +8,8 @@ else
     ifeq ($(UNAME_S),Linux)
         ifeq ($(UNAME_M),aarch64)
             PLATFORM := linux-arm64
+        else ifeq ($(UNAME_M),armv7l)
+            PLATFORM := linux-arm
         else
             PLATFORM := linux-x64
         endif

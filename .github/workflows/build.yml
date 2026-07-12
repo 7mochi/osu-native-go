@@ -28,6 +28,23 @@ jobs:
           name: native-linux-x64
           path: build/generated/
 
+  build-linux-arm:
+    name: Build linux-arm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: sudo apt-get install -y gcc-arm-linux-gnueabihf
+      - run: dotnet publish osu-native/osu.Native -c Release -r linux-arm -o build/generated
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-linux-arm
+          path: build/generated/
+
   build-linux-arm64:
     name: Build linux-arm64
     runs-on: ubuntu-24.04-arm
@@ -79,7 +96,7 @@ jobs:
   commit:
     name: Commit binaries
     runs-on: ubuntu-latest
-    needs: [build-linux-x64, build-linux-arm64, build-darwin-arm64, build-win-x64]
+    needs: [build-linux-x64, build-linux-arm, build-linux-arm64, build-darwin-arm64, build-win-x64]
 
     steps:
       - uses: actions/checkout@v7
@@ -97,9 +114,10 @@ jobs:
 
       - name: Organize native binaries
         run: |
-          mkdir -p native/bin/linux-x64 native/bin/linux-arm64 native/bin/darwin-arm64 native/bin/win-x64
+          mkdir -p native/bin/linux-x64 native/bin/linux-arm native/bin/linux-arm64 native/bin/darwin-arm64 native/bin/win-x64
 
           cp artifacts/native-linux-x64/osu.Native.so native/bin/linux-x64/libosu.Native.so
+          cp artifacts/native-linux-arm/osu.Native.so native/bin/linux-arm/libosu.Native.so
           cp artifacts/native-linux-arm64/osu.Native.so native/bin/linux-arm64/libosu.Native.so
           cp artifacts/native-darwin-arm64/osu.Native.dylib native/bin/darwin-arm64/libosu.Native.dylib
           cp artifacts/native-win-x64/osu.Native.dll native/bin/win-x64/osu.Native.dll
