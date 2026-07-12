@@ -39,7 +39,7 @@ jobs:
         with:
           dotnet-version: '10.0.x'
       - run: sudo apt-get install -y gcc-arm-linux-gnueabihf lld
-      - run: dotnet publish osu-native/osu.Native -c Release -r linux-arm -o build/generated -p:LinkerFlavor=lld
+      - run: dotnet publish osu-native/osu.Native -c Release -r linux-arm -o build/generated -p:LinkerFlavor=lld -p:StripSymbols=false
       - uses: actions/upload-artifact@v7
         with:
           name: native-linux-arm
