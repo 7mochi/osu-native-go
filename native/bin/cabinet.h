@@ -2,7 +2,7 @@
 // -- https://github.com/minisbett/cabinet
 //
 // Assembly: /home/runner/work/osu-native-go/osu-native-go/osu-native/osu.Native/bin/Release/net10.0/linux-x64/osu.Native.dll
-//     Date: 2026-07-11 21:59:04 +00:00
+//     Date: 2026-07-12 16:23:06 +00:00
 
 #include <stdint.h>
 #include <stdbool.h>
